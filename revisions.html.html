@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi Révisions Bac - Maths & Français</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --maths: #0ea5e9;
+            --francais: #ec4899;
+            --bg: #f8fafc;
+            --text: #1e293b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        header h1 { margin: 0; font-size: 2rem; }
+        header p { margin: 10px 0 0; opacity: 0.9; font-size: 1.1rem; }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        /* Emploi du temps */
+        .schedule-day {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .schedule-day:last-child { border-bottom: none; }
+        .day-name {
+            font-weight: bold;
+            width: 120px;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        .day-details {
+            flex-grow: 1;
+        }
+        .time-tag {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+
+        /* Zones de dépôt */
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 15px;
+        }
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background: #f5f3ff;
+        }
+        .drop-zone p { margin: 0; color: #64748b; }
+        .drop-zone input[type="file"] { display: none; }
+        
+        .maths-title { color: var(--maths); }
+        .francais-title { color: var(--francais); }
+
+        /* Listes de fichiers */
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+        .file-icon { margin-right: 10px; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🎓 Mon Espace Révisions Bac</h1>
+            <p>Suivi exclusif des Maths et du Français pour Papa</p>
+        </header>
+
+        <div class="card">
+            <h2>📅 Mon Emploi du Temps Hebdomadaire</h2>
+            
+            <div class="schedule-day">
+                <div class="day-name">Mercredi</div>
+                <div class="day-details">
+                    <span class="time-tag">Après-midi</span> Devoirs + Analyse linéaire
+                </div>
+            </div>
+            
+            <div class="schedule-day">
+                <div class="day-name">Samedi</div>
+                <div class="day-details">
+                    <span class="time-tag">10h - 12h</span> Bac de maths
+                </div>
+            </div>
+            
+            <div class="schedule-day">
+                <div class="day-name">Dimanche</div>
+                <div class="day-details">
+                    <span class="time-tag">15h - 17h</span> Analyses linéaires + Oral du bac
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="maths-title">📐 Révisions de chaque chapitre de Maths</h2>
+            <div class="drop-zone" onclick="document.getElementById('maths-input').click()">
+                <p>📂 Cliquez ici pour ajouter vos fiches ou exercices de Maths (PDF)</p>
+                <input type="file" id="maths-input" accept=".pdf" multiple onchange="handleFiles(this, 'maths-files')">
+            </div>
+            <ul id="maths-files" class="file-list">
+                </ul>
+        </div>
+
+        <div class="card">
+            <h2 class="francais-title">📖 Analyses Linéaires (Français)</h2>
+            <div class="drop-zone" onclick="document.getElementById('francais-input').click()">
+                <p>📂 Cliquez ici pour ajouter vos analyses linéaires (PDF)</p>
+                <input type="file" id="francais-input" accept=".pdf" multiple onchange="handleFiles(this, 'francais-files')">
+            </div>
+            <ul id="francais-files" class="file-list">
+                </ul>
+        </div>
+
+    </div>
+
+    <script>
+        function handleFiles(input, listId) {
+            const fileList = document.getElementById(listId);
+            const files = input.files;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // Créer un élément visuel pour le fichier déposé
+                const li = document.createElement('li');
+                li.className = 'file-item';
+                li.innerHTML = `<span class="file-icon">📄</span> <strong>${file.name}</strong> &nbsp;(Prêt)`;
+                
+                fileList.appendChild(li);
+            }
+        }
+    </script>
+</body>
+</html>
